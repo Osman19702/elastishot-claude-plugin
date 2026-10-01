@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "elastishot",
+  "displayName": "Elastishot",
+  "description": "Compare two screenshots or two page URLs and report which regions and DOM locators changed, even when the layout shifted, zoomed or collapsed — plus config-driven visual regression baselines across targets and viewports, approving an intentional redesign, and a JUnit CI gate. Wraps the elastishot CLI from npm.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Osman Turalioglu",
+    "url": "https://github.com/Osman19702"
+  },
+  "homepage": "https://github.com/Osman19702/elastishot-claude-plugin",
+  "repository": "https://github.com/Osman19702/elastishot-claude-plugin",
+  "license": "MIT",
+  "keywords": [
+    "visual-regression",
+    "screenshot",
+    "diff",
+    "image-comparison",
+    "ui-testing",
+    "playwright",
+    "ci"
+  ]
+}
