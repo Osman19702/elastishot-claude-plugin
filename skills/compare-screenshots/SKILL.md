@@ -10,7 +10,7 @@ One-shot visual comparison with the `elastishot` CLI from npm. Nothing is vendor
 
 ## Prerequisites
 
-- Node.js 20 or newer. `npx elastishot@^0.2.0` fetches the package on first use (~13 MB, pure JS plus a WASM build, no native compile step).
+- Node.js 20 or newer. `npx elastishot@0.2.0` fetches the package on first use (~13 MB, pure JS plus a WASM build, no native compile step).
 - **Playwright is needed only when a side is a page URL** — a page you want captured, not an image file or an image URL. Install it in the project:
   `npm install -D playwright && npx playwright install chromium`
   Without it a page capture fails with `E_CAPTURE` and exit 2. Comparing two local images needs no browser at all.
@@ -21,16 +21,16 @@ One-shot visual comparison with the `elastishot` CLI from npm. Nothing is vendor
 Two local images, the offline path:
 
 ```
-npx elastishot@^0.2.0 compare before.png after.png
+npx elastishot@0.2.0 compare before.png after.png
 ```
 
 Two live pages:
 
 ```
-npx elastishot@^0.2.0 compare https://staging.example.com/ https://example.com/ --full-page
+npx elastishot@0.2.0 compare https://staging.example.com/ https://example.com/ --full-page
 ```
 
-The version range is deliberate: this skill documents the 0.2.x flags, exit codes and defaults, and bare `npx elastishot` would silently pick up a newer contract (0.2.0 already changed scores on ~10% of a 230-pair corpus).
+The exact version is deliberate: this skill documents the 0.2.0 flags, exit codes and defaults, and bare `npx elastishot` would silently pick up a newer contract (0.2.0 already changed scores on ~10% of a 230-pair corpus).
 
 Each side may independently be a PNG or JPEG file, an image URL, a page URL, or a baseline/snapshot folder. **PNG and JPEG only** — SVG, WebP, AVIF and PDF fail with `E_DECODE`, exit 2. Exactly two positionals; a third is a usage error.
 

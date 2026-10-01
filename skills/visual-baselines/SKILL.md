@@ -49,15 +49,15 @@ Keys are validated strictly: an unknown key is `E_CONFIG`, exit 2. Top level acc
 
 | Goal | Command |
 | --- | --- |
-| Bootstrap, first run | `npx elastishot@^0.2.0 run --update` |
-| Regular check | `npx elastishot@^0.2.0 run` |
-| Only some targets | `npx elastishot@^0.2.0 run home pricing/desktop` |
-| CI | `npx elastishot@^0.2.0 run --junit` |
-| Accept an intentional redesign | `npx elastishot@^0.2.0 approve <target>` or `approve --all` |
-| One-off baseline for a single page | `npx elastishot@^0.2.0 snapshot <url> --name landing --full-page` |
-| Re-render reports from a finished run | `npx elastishot@^0.2.0 report <runDir>` |
+| Bootstrap, first run | `npx elastishot@0.2.0 run --update` |
+| Regular check | `npx elastishot@0.2.0 run` |
+| Only some targets | `npx elastishot@0.2.0 run home pricing/desktop` |
+| CI | `npx elastishot@0.2.0 run --junit` |
+| Accept an intentional redesign | `npx elastishot@0.2.0 approve <target>` or `approve --all` |
+| One-off baseline for a single page | `npx elastishot@0.2.0 snapshot <url> --name landing --full-page` |
+| Re-render reports from a finished run | `npx elastishot@0.2.0 report <runDir>` |
 
-Keep the version range. This skill documents the 0.2.x flags, exit codes and defaults, and bare `npx elastishot` resolves whatever is newest on npm — 0.2.0 alone moved the score on ~10% of a 230-pair corpus, which is enough to make stored baselines fail against a contract you did not choose.
+Keep the exact version. This skill documents the 0.2.0 flags, exit codes and defaults, and bare `npx elastishot` resolves whatever is newest on npm — 0.2.0 alone moved the score on ~10% of a 230-pair corpus, which is enough to make stored baselines fail against a contract you did not choose.
 
 `run --update` writes only the **missing** baselines and never overwrites an existing one; re-baselining a page that changed on purpose is what `approve` is for. An unknown target name exits 2 and lists the configured names.
 
@@ -69,7 +69,7 @@ Keep the version range. This skill documents the 0.2.x flags, exit codes and def
 
 - Only pairs produced by `run` from config targets are approvable — they carry both a target and a viewport name. A pair made by `compare` is never approvable and `approve` reports nothing to approve.
 - With no argument it reads `<outDir>/latest`, a plain text file holding the newest run folder's absolute path.
-- **Any `compare` in the same project rewrites `<outDir>/latest`** — `compare` picks up the project config, so it shares the same `outDir`, and it overwrites that file on every invocation. Since a compare pair is not approvable, one ad-hoc `compare` between `run` and `approve` makes a bare `approve` exit 2 with nothing to approve, and the run you meant is then reachable only by name. Pass the run folder explicitly (`npx elastishot@^0.2.0 approve --all <outDir>/<runId>`) whenever a compare may have happened since the run.
+- **Any `compare` in the same project rewrites `<outDir>/latest`** — `compare` picks up the project config, so it shares the same `outDir`, and it overwrites that file on every invocation. Since a compare pair is not approvable, one ad-hoc `compare` between `run` and `approve` makes a bare `approve` exit 2 with nothing to approve, and the run you meant is then reachable only by name. Pass the run folder explicitly (`npx elastishot@0.2.0 approve --all <outDir>/<runId>`) whenever a compare may have happened since the run.
 - `approve <what>` treats `<what>` as a **run folder** if it happens to be an existing directory relative to the cwd, otherwise as a target name. A target named like a directory in the project root is misread silently.
 - Pairs with status `error` are never promoted.
 - A run made with `--single-file` writes no `baseline.png` / `candidate.png`, so it leaves nothing for `approve` to promote.
@@ -89,7 +89,7 @@ Keep the version range. This skill documents the 0.2.x flags, exit codes and def
 
 A run folder at `<outDir>/<runId>` with `index.html` (one card per pair), `pairs/<pairId>/report.html` (slider / flip / blink / overlay / diff viewer), `report.json`, `pairs/<pairId>/result.json` and, with `--junit`, `junit.xml`. `<outDir>/latest` holds the newest run's path.
 
-In CI: start the app (or serve the built output) and wait for its port, run `npx elastishot@^0.2.0 run --junit` from the config's directory, let the reporter pick up `junit.xml`, and upload the run folder as an artifact so the HTML report survives. `index.html` carries inline thumbnails but links into `pairs/`, so upload the whole folder — or add `--single-file` if a single attachable page matters more than size.
+In CI: start the app (or serve the built output) and wait for its port, run `npx elastishot@0.2.0 run --junit` from the config's directory, let the reporter pick up `junit.xml`, and upload the run folder as an artifact so the HTML report survives. `index.html` carries inline thumbnails but links into `pairs/`, so upload the whole folder — or add `--single-file` if a single attachable page matters more than size.
 
 **Do not `cat` report.json or pipe `--json` into the conversation** — it embeds base64 thumbnails for every side of every pair. Read `pairs/<pairId>/result.json`, or pull only `.totals`, `.pairs[].id`, `.pairs[].status`, `.pairs[].summary.counts` and `.pairs[].locators.changedLocators`. The console prints the target name, not the pair id; for a `run` pair the id is `<target>--<viewport>` with both parts lowercased and non-alphanumerics collapsed to `-`, and `.pairs[].id` in report.json is the reliable source.
 

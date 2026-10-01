@@ -1,6 +1,6 @@
 # Elastishot plugin for Claude Code
 
-Teaches Claude to compare two screenshots or two page URLs and tell you **which DOM elements changed**, not just where the red pixels are. It wraps the [`elastishot`](https://github.com/Osman19702/elastishot) CLI from npm — the plugin ships no code of its own, so it stays tiny and pulls the CLI on demand with `npx`, pinned to the version range it documents.
+Teaches Claude to compare two screenshots or two page URLs and tell you **which DOM elements changed**, not just where the red pixels are. It wraps the [`elastishot`](https://github.com/Osman19702/elastishot) CLI from npm — the plugin ships no code of its own, so it stays tiny and pulls the CLI on demand with `npx`, pinned to the exact version it documents.
 
 Elastishot aligns the two images first (feature matching plus a row-band alignment), so it still works when the viewport changed size, the page zoomed, or a section collapsed — the cases where a plain pixel diff goes all-red from the first shifted row down.
 
@@ -17,12 +17,13 @@ This repository is the plugin’s source. The `elastishot` entry in the `osman-p
 
 ## Requirements
 
-- **Node.js 20 or newer.** `npx elastishot@^0.2.0` fetches the package on first use (about 13 MB, no native compile step).
+- **Claude Code.** The skills run a command-line tool, so they need a terminal with Node.js. Where Claude has no shell, the skill text loads but nothing can run.
+- **Node.js 20 or newer.** `npx elastishot@0.2.0` fetches the package on first use (about 13 MB, no native compile step).
 - **Playwright, only for page URLs.** Comparing two image files needs no browser. Capturing a page does:
   ```
   npm install -D playwright && npx playwright install chromium
   ```
-- **Built against elastishot 0.2.x.** The flags, defaults and exit codes below are that contract, which is why the skills invoke `npx elastishot@^0.2.0` rather than bare `npx elastishot`.
+- **Built against elastishot 0.2.0, pinned exactly.** The flags, defaults and exit codes below are that contract, which is why the skills invoke `npx elastishot@0.2.0` rather than bare `npx elastishot`. A newer elastishot reaches plugin users only through a new plugin version, never silently.
 
 ## What you get
 
@@ -33,8 +34,8 @@ Two skills. Claude picks one on its own from what you ask; you can also invoke t
 One-shot comparison. No baselines needed — but a project config in the directory you run from still applies.
 
 ```
-npx elastishot@^0.2.0 compare before.png after.png
-npx elastishot@^0.2.0 compare https://staging.example.com/ https://example.com/ --full-page
+npx elastishot@0.2.0 compare before.png after.png
+npx elastishot@0.2.0 compare https://staging.example.com/ https://example.com/ --full-page
 ```
 
 Ask Claude things like:
@@ -51,9 +52,9 @@ You get a line per pair with a similarity score, added/removed/changed/moved cou
 The config-driven suite: baselines per target and viewport, a CI gate, and approving an intentional redesign.
 
 ```
-npx elastishot@^0.2.0 run --update      # bootstrap the baselines
-npx elastishot@^0.2.0 run --junit       # the CI check
-npx elastishot@^0.2.0 approve home      # accept a redesign as the new reference
+npx elastishot@0.2.0 run --update      # bootstrap the baselines
+npx elastishot@0.2.0 run --junit       # the CI check
+npx elastishot@0.2.0 approve home      # accept a redesign as the new reference
 ```
 
 Ask Claude things like:
@@ -65,6 +66,15 @@ Ask Claude things like:
 
 The skill carries the parts that are easy to get wrong: the config file must be in the directory you run from (there is no upward search), `run` takes its capture settings from the config rather than from CLI flags, and only pairs produced by `run` can be approved.
 
+## What it runs and fetches
+
+The plugin ships no code and runs nothing on its own. Everything happens through the commands above, which Claude runs in your terminal:
+
+- `npx elastishot@0.2.0` downloads the `elastishot` package from the public npm registry on first use (about 13 MB, no native compile step) and caches it; later runs do not download it again.
+- For page URLs, Playwright launches a local Chromium that loads only the URLs you pass. Installing Playwright and its browser is a separate, explicit step (see Requirements).
+- The elastishot CLI has no telemetry and contacts only the URLs you pass it. Reports, baselines and run folders are written locally, under the directory you run from.
+- No account, API key or credential is read or sent.
+
 ## Exit codes
 
 | Code | Meaning |
@@ -73,7 +83,7 @@ The skill carries the parts that are easy to get wrong: the config file must be 
 | 1 | Differences found — the reports are still written |
 | 2 | Usage or runtime error (missing Playwright, unreadable input, capture timeout) |
 
-That makes `npx elastishot@^0.2.0 run --junit` usable directly as a CI gate, once your app is being served at the target URLs.
+That makes `npx elastishot@0.2.0 run --junit` usable directly as a CI gate, once your app is being served at the target URLs.
 
 ## Developing
 
