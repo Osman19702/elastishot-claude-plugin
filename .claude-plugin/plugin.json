@@ -10,6 +10,8 @@
   },
   "homepage": "https://github.com/Osman19702/elastishot-claude-plugin",
   "repository": "https://github.com/Osman19702/elastishot-claude-plugin",
+  "supportUrl": "https://github.com/Osman19702/elastishot-claude-plugin/issues",
+  "documentationUrl": "https://github.com/Osman19702/elastishot#readme",
   "license": "MIT",
   "keywords": [
     "visual-regression",
